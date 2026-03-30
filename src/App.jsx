@@ -1,357 +1,249 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState("dashboard");
-  const [alerts, setAlerts] = useState([
-    {
-      id: 1,
-      text: "Beverly Hills – Suspicious activity",
-      level: "medium",
-    },
-    {
-      id: 2,
-      text: "Vehicle break-ins increasing",
-      level: "high",
-    },
-    {
-      id: 3,
-      text: "Retail theft spike",
-      level: "medium",
-    },
-  ]);
+  const locations = ["Rolex Rodeo", "Patek Rodeo", "Rolex Century City"];
+  const categories = ["Local Crime", "Local Alert", "Suspicious Activity", "Traffic / Movement"];
 
-  const [newAlertText, setNewAlertText] = useState("");
-  const [newAlertLevel, setNewAlertLevel] = useState("medium");
-  const [intelResult, setIntelResult] = useState(null);
-  const [clientName, setClientName] = useState("");
-  const [itineraryInput, setItineraryInput] = useState("");
-  const [itineraryResult, setItineraryResult] = useState(null);
-  const [manualThreat, setManualThreat] = useState(null);
+  const [tab, setTab] = useState("dashboard");
+  const [location, setLocation] = useState(localStorage.getItem("location") || "Rolex Rodeo");
+  const [alerts, setAlerts] = useState(JSON.parse(localStorage.getItem("alerts")) || []);
+  const [mode, setMode] = useState("auto");
+  const [manualLevel, setManualLevel] = useState("LOW");
 
-  const threatLevel =
-    manualThreat ||
-    (alerts.some((a) => a.level === "high")
-      ? "HIGH"
-      : alerts.some((a) => a.level === "medium")
-        ? "MEDIUM"
-        : "LOW");
+  const [newAlert, setNewAlert] = useState({
+    title: "",
+    category: "Local Alert",
+    level: "Medium",
+    location: location,
+    notes: ""
+  });
 
-  const getColor = () => {
-    if (threatLevel === "LOW") return "green";
-    if (threatLevel === "MEDIUM") return "orange";
-    if (threatLevel === "HIGH") return "red";
-    return "white";
+  const [intelInput, setIntelInput] = useState({
+    name: "",
+    role: "",
+    visibility: "Moderate",
+    location: "",
+    notes: ""
+  });
+
+  const [intelOutput, setIntelOutput] = useState(null);
+
+  const [itineraryInput, setItineraryInput] = useState({
+    hotel: "",
+    route: "",
+    venue: "",
+    poc: "",
+    notes: ""
+  });
+
+  const [itineraryOutput, setItineraryOutput] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem("alerts", JSON.stringify(alerts));
+  }, [alerts]);
+
+  useEffect(() => {
+    localStorage.setItem("location", location);
+  }, [location]);
+
+  const getThreatLevel = () => {
+    if (mode === "manual") return manualLevel;
+
+    if (alerts.some(a => a.level === "High")) return "HIGH";
+    if (alerts.some(a => a.level === "Medium")) return "MEDIUM";
+    return "LOW";
   };
 
+  const threat = getThreatLevel();
+
   const addAlert = () => {
-    if (!newAlertText.trim()) return;
-
-    const newAlert = {
+    if (!newAlert.title) return;
+    const alert = {
+      ...newAlert,
       id: Date.now(),
-      text: newAlertText,
-      level: newAlertLevel,
+      timestamp: new Date().toLocaleTimeString(),
+      status: "Active"
     };
+    setAlerts([alert, ...alerts]);
+    setNewAlert({ ...newAlert, title: "", notes: "" });
+  };
 
-    setAlerts((prev) => [newAlert, ...prev]);
-    setNewAlertText("");
-    setNewAlertLevel("medium");
-    setManualThreat(null);
+  const runIntel = () => {
+    setIntelOutput({
+      ...intelInput,
+      risk: intelInput.visibility === "Very High" ? "High" : "Medium"
+    });
+  };
+
+  const generateItinerary = () => {
+    setItineraryOutput(itineraryInput);
   };
 
   const buttonStyle = {
-    padding: "10px 14px",
-    borderRadius: "12px",
-    border: "1px solid #555",
-    background: "#1f2937",
-    color: "white",
-    cursor: "pointer",
-    marginRight: "8px",
-    marginBottom: "8px",
-    fontSize: "16px",
-  };
-
-  const activeButtonStyle = {
-    ...buttonStyle,
-    background: "#374151",
-    border: "1px solid #888",
-  };
-
-  const inputStyle = {
-    padding: "12px",
-    borderRadius: "12px",
-    border: "1px solid #444",
-    background: "#111827",
-    color: "white",
-    width: "100%",
-    boxSizing: "border-box",
-    marginBottom: "12px",
-    fontSize: "16px",
-  };
-
-  const sectionStyle = {
-    borderTop: "1px solid #666",
-    paddingTop: "20px",
-    marginTop: "20px",
-  };
-
-  const cardStyle = {
-    background: "#111827",
-    border: "1px solid #374151",
-    borderRadius: "16px",
-    padding: "16px",
-    marginTop: "14px",
-  };
-
-  const navButtonStyle = (tabName) => ({
     padding: "10px 16px",
-    borderRadius: "14px",
+    margin: "6px",
+    borderRadius: "10px",
     border: "1px solid #555",
-    background: activeTab === tabName ? "#374151" : "#1f2937",
-    color: "white",
-    cursor: "pointer",
-    marginRight: "8px",
-    marginBottom: "8px",
-    fontSize: "16px",
-  });
-
-  const renderDashboard = () => (
-    <>
-      <h2 style={{ textAlign: "center", fontSize: "34px", marginBottom: "8px" }}>
-        Threat Level
-      </h2>
-
-      <h1
-        style={{
-          color: getColor(),
-          fontSize: "64px",
-          margin: "10px 0 20px",
-          textAlign: "center",
-        }}
-      >
-        {threatLevel}
-      </h1>
-
-      <div style={{ textAlign: "center", marginBottom: "10px" }}>
-        <button
-          style={manualThreat === "LOW" ? activeButtonStyle : buttonStyle}
-          onClick={() => setManualThreat("LOW")}
-        >
-          LOW
-        </button>
-        <button
-          style={manualThreat === "MEDIUM" ? activeButtonStyle : buttonStyle}
-          onClick={() => setManualThreat("MEDIUM")}
-        >
-          MEDIUM
-        </button>
-        <button
-          style={manualThreat === "HIGH" ? activeButtonStyle : buttonStyle}
-          onClick={() => setManualThreat("HIGH")}
-        >
-          HIGH
-        </button>
-        <button
-          style={buttonStyle}
-          onClick={() => setManualThreat(null)}
-        >
-          AUTO
-        </button>
-      </div>
-
-      <p style={{ textAlign: "center", color: "#cbd5e1", marginTop: "0", marginBottom: "12px" }}>
-        Mode: {manualThreat ? "Manual Override" : "Auto from Alerts"}
-      </p>
-
-      <div style={sectionStyle}>
-        <h2 style={{ textAlign: "center", fontSize: "34px", marginBottom: "12px" }}>
-          Active Alerts
-        </h2>
-
-        <ul style={{ lineHeight: "1.9", fontSize: "22px", paddingLeft: "28px" }}>
-          {alerts.map((alert) => (
-            <li key={alert.id} style={{ marginBottom: "6px" }}>
-              {alert.level === "high" ? "🚨" : alert.level === "medium" ? "⚠️" : "ℹ️"}{" "}
-              {alert.text}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div style={{ ...sectionStyle, paddingBottom: "40px" }}>
-        <h2 style={{ textAlign: "center", fontSize: "34px", marginBottom: "12px" }}>
-          Add New Alert
-        </h2>
-
-        <input
-          style={inputStyle}
-          placeholder="Enter new intel..."
-          value={newAlertText}
-          onChange={(e) => setNewAlertText(e.target.value)}
-        />
-
-        <select
-          style={inputStyle}
-          value={newAlertLevel}
-          onChange={(e) => setNewAlertLevel(e.target.value)}
-        >
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
-        </select>
-
-        <button style={buttonStyle} onClick={addAlert}>
-          Add Alert
-        </button>
-      </div>
-    </>
-  );
-
-  const renderIntel = () => (
-    <div style={sectionStyle}>
-      <h2 style={{ textAlign: "center", fontSize: "34px", marginBottom: "12px" }}>
-        Client Intel
-      </h2>
-
-      <input
-        style={inputStyle}
-        placeholder="Enter client name"
-        value={clientName}
-        onChange={(e) => setClientName(e.target.value)}
-      />
-
-      <button
-        style={buttonStyle}
-        onClick={() => {
-          if (!clientName.trim()) return;
-          setIntelResult({
-            risk: "Medium",
-            notes: `${clientName} is a high-visibility individual. Monitor public exposure, entry/exit points, crowd proximity, and vehicle approach routes.`,
-          });
-        }}
-      >
-        Run Intel
-      </button>
-
-      {intelResult && (
-        <div style={cardStyle}>
-          <p style={{ fontSize: "20px", marginBottom: "10px" }}>
-            <strong>Risk Level:</strong> {intelResult.risk}
-          </p>
-          <p style={{ fontSize: "18px", lineHeight: "1.7" }}>
-            <strong>Notes:</strong> {intelResult.notes}
-          </p>
-        </div>
-      )}
-    </div>
-  );
-
-  const renderItinerary = () => (
-    <div style={sectionStyle}>
-      <h2 style={{ textAlign: "center", fontSize: "34px", marginBottom: "12px" }}>
-        Itinerary Builder
-      </h2>
-
-      <input
-        style={inputStyle}
-        placeholder="Location / Hotel / Venue"
-        value={itineraryInput}
-        onChange={(e) => setItineraryInput(e.target.value)}
-      />
-
-      <button
-        style={buttonStyle}
-        onClick={() => {
-          if (!itineraryInput.trim()) return;
-          setItineraryResult({
-            destination: itineraryInput,
-            risk: "Moderate",
-            notes:
-              "Review ingress/egress routes, nearby hospitals, choke points, valet/pickup exposure, and alternate routes before movement.",
-          });
-        }}
-      >
-        Generate Plan
-      </button>
-
-      {itineraryResult && (
-        <div style={cardStyle}>
-          <p style={{ fontSize: "20px", marginBottom: "10px" }}>
-            <strong>Destination:</strong> {itineraryResult.destination}
-          </p>
-          <p style={{ fontSize: "20px", marginBottom: "10px" }}>
-            <strong>Risk:</strong> {itineraryResult.risk}
-          </p>
-          <p style={{ fontSize: "18px", lineHeight: "1.7" }}>
-            <strong>Notes:</strong> {itineraryResult.notes}
-          </p>
-        </div>
-      )}
-    </div>
-  );
-
-  const renderAlerts = () => (
-    <div style={sectionStyle}>
-      <h2 style={{ textAlign: "center", fontSize: "34px", marginBottom: "12px" }}>
-        Alerts Feed
-      </h2>
-
-      <ul style={{ lineHeight: "1.9", fontSize: "22px", paddingLeft: "28px" }}>
-        {alerts.map((alert) => (
-          <li key={alert.id} style={{ marginBottom: "6px" }}>
-            {alert.level === "high" ? "🚨" : alert.level === "medium" ? "⚠️" : "ℹ️"}{" "}
-            {alert.text}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-
-  const renderContent = () => {
-    if (activeTab === "dashboard") return renderDashboard();
-    if (activeTab === "intel") return renderIntel();
-    if (activeTab === "itinerary") return renderItinerary();
-    if (activeTab === "alerts") return renderAlerts();
-    return null;
+    background: "#2c3440",
+    color: "white"
   };
 
   return (
-    <div
-      style={{
-        background: "#0b0f1a",
-        color: "white",
-        minHeight: "100vh",
-        padding: "20px",
-        fontFamily: "Arial, sans-serif",
-        overflowY: "auto",
-      }}
-    >
-      <h1
-        style={{
-          fontSize: "28px",
-          textAlign: "center",
-          marginBottom: "20px",
-          lineHeight: "1.2",
-        }}
-      >
-        🛡️ EP Command Dashboard
-      </h1>
+    <div style={{ background: "#0b1320", color: "white", minHeight: "100vh", padding: 20 }}>
+      <h1 style={{ textAlign: "center" }}>🛡️ EP Command Dashboard</h1>
 
-      <div style={{ textAlign: "center", marginBottom: "20px" }}>
-        <button style={navButtonStyle("dashboard")} onClick={() => setActiveTab("dashboard")}>
-          Dashboard
-        </button>
-        <button style={navButtonStyle("intel")} onClick={() => setActiveTab("intel")}>
-          Intel
-        </button>
-        <button style={navButtonStyle("itinerary")} onClick={() => setActiveTab("itinerary")}>
-          Itinerary
-        </button>
-        <button style={navButtonStyle("alerts")} onClick={() => setActiveTab("alerts")}>
-          Alerts
-        </button>
+      <div style={{ textAlign: "center" }}>
+        {["dashboard", "intel", "itinerary", "alerts"].map(t => (
+          <button key={t} style={buttonStyle} onClick={() => setTab(t)}>
+            {t.charAt(0).toUpperCase() + t.slice(1)}
+          </button>
+        ))}
       </div>
 
-      {renderContent()}
+      {/* DASHBOARD */}
+      {tab === "dashboard" && (
+        <div style={{ textAlign: "center" }}>
+          <h2>{location}</h2>
+
+          <select value={location} onChange={e => setLocation(e.target.value)}>
+            {locations.map(l => <option key={l}>{l}</option>)}
+          </select>
+
+          <h2>Threat Level</h2>
+          <h1 style={{
+            color: threat === "HIGH" ? "red" : threat === "MEDIUM" ? "orange" : "green"
+          }}>
+            {threat}
+          </h1>
+
+          <div>
+            <button style={buttonStyle} onClick={() => setMode("auto")}>AUTO</button>
+            <button style={buttonStyle} onClick={() => setMode("manual")}>MANUAL</button>
+          </div>
+
+          {mode === "manual" && (
+            <div>
+              {["LOW", "MEDIUM", "HIGH"].map(l => (
+                <button key={l} style={buttonStyle} onClick={() => setManualLevel(l)}>
+                  {l}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <p>Mode: {mode}</p>
+
+          <h3>Active Alerts</h3>
+
+          {alerts.length === 0 && <p>No active alerts</p>}
+
+          {alerts.map(a => (
+            <div key={a.id} style={{
+              border: "1px solid #444",
+              padding: 10,
+              margin: 10,
+              borderRadius: 10
+            }}>
+              <b>{a.title}</b>
+              <p>{a.category} | {a.level}</p>
+              <p>{a.location} - {a.timestamp}</p>
+              <p>{a.notes}</p>
+            </div>
+          ))}
+
+          <h3>Add Alert</h3>
+
+          <input
+            placeholder="Title"
+            value={newAlert.title}
+            onChange={e => setNewAlert({ ...newAlert, title: e.target.value })}
+          />
+
+          <select onChange={e => setNewAlert({ ...newAlert, category: e.target.value })}>
+            {categories.map(c => <option key={c}>{c}</option>)}
+          </select>
+
+          <select onChange={e => setNewAlert({ ...newAlert, level: e.target.value })}>
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+          </select>
+
+          <textarea
+            placeholder="Notes"
+            value={newAlert.notes}
+            onChange={e => setNewAlert({ ...newAlert, notes: e.target.value })}
+          />
+
+          <button style={buttonStyle} onClick={addAlert}>Add</button>
+        </div>
+      )}
+
+      {/* INTEL */}
+      {tab === "intel" && (
+        <div>
+          <h2>Client Intel</h2>
+
+          <input placeholder="Name" onChange={e => setIntelInput({ ...intelInput, name: e.target.value })} />
+          <input placeholder="Role" onChange={e => setIntelInput({ ...intelInput, role: e.target.value })} />
+          <select onChange={e => setIntelInput({ ...intelInput, visibility: e.target.value })}>
+            <option>Low</option>
+            <option>Moderate</option>
+            <option>High</option>
+            <option>Very High</option>
+          </select>
+
+          <textarea placeholder="Notes" onChange={e => setIntelInput({ ...intelInput, notes: e.target.value })} />
+
+          <button style={buttonStyle} onClick={runIntel}>Run Intel</button>
+
+          {intelOutput && (
+            <div>
+              <h3>{intelOutput.name}</h3>
+              <p>Risk: {intelOutput.risk}</p>
+              <p>Visibility: {intelOutput.visibility}</p>
+              <p>{intelOutput.notes}</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ITINERARY */}
+      {tab === "itinerary" && (
+        <div>
+          <h2>Itinerary Builder</h2>
+
+          <input placeholder="Hotel" onChange={e => setItineraryInput({ ...itineraryInput, hotel: e.target.value })} />
+          <input placeholder="Route" onChange={e => setItineraryInput({ ...itineraryInput, route: e.target.value })} />
+          <input placeholder="Venue" onChange={e => setItineraryInput({ ...itineraryInput, venue: e.target.value })} />
+          <input placeholder="POC" onChange={e => setItineraryInput({ ...itineraryInput, poc: e.target.value })} />
+
+          <textarea placeholder="Notes" onChange={e => setItineraryInput({ ...itineraryInput, notes: e.target.value })} />
+
+          <button style={buttonStyle} onClick={generateItinerary}>Generate</button>
+
+          {itineraryOutput && (
+            <div>
+              <h3>Movement Plan</h3>
+              <p>Hotel: {itineraryOutput.hotel}</p>
+              <p>Route: {itineraryOutput.route}</p>
+              <p>Venue: {itineraryOutput.venue}</p>
+              <p>POC: {itineraryOutput.poc}</p>
+              <p>{itineraryOutput.notes}</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ALERTS TAB */}
+      {tab === "alerts" && (
+        <div>
+          <h2>All Alerts</h2>
+          {alerts.map(a => (
+            <div key={a.id}>{a.title}</div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
