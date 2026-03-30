@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 
 const STORAGE_KEYS = {
-  location: "ep_v21_location",
-  alerts: "ep_v21_alerts",
-  mode: "ep_v21_mode",
-  manualThreat: "ep_v21_manualThreat",
-  intelOutput: "ep_v21_intelOutput",
-  itineraryOutput: "ep_v21_itineraryOutput",
+  location: "ep_v22_location",
+  alerts: "ep_v22_alerts",
+  mode: "ep_v22_mode",
+  manualThreat: "ep_v22_manualThreat",
+  intelOutput: "ep_v22_intelOutput",
+  itineraryOutput: "ep_v22_itineraryOutput",
 };
 
 const LOCATIONS = ["Rolex Rodeo", "Patek Rodeo", "Rolex Century City"];
@@ -17,129 +17,22 @@ const ALERT_CATEGORIES = [
   "Traffic / Movement",
 ];
 const ALERT_LEVELS = ["Low", "Medium", "High"];
-const ALERT_STATUS = ["Active", "Cleared"];
 const VISIBILITY_LEVELS = ["Low", "Moderate", "High", "Very High"];
 
-const styles = {
-  page: {
-    background: "#0b1320",
-    color: "white",
-    minHeight: "100vh",
-    padding: "20px 16px 40px",
-    fontFamily: "Arial, sans-serif",
-  },
-  title: {
-    fontSize: "28px",
-    fontWeight: 700,
-    textAlign: "center",
-    marginBottom: "18px",
-    lineHeight: 1.15,
-  },
-  tabsWrap: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    gap: "10px",
-    marginBottom: "18px",
-  },
-  button: {
-    padding: "11px 16px",
-    borderRadius: "14px",
-    border: "1px solid #596273",
-    background: "#2d3748",
-    color: "white",
-    cursor: "pointer",
-    fontSize: "16px",
-    fontWeight: 600,
-  },
-  buttonActive: {
-    padding: "11px 16px",
-    borderRadius: "14px",
-    border: "1px solid #8b95a7",
-    background: "#3a4558",
-    color: "white",
-    cursor: "pointer",
-    fontSize: "16px",
-    fontWeight: 700,
-  },
-  section: {
-    borderTop: "1px solid #4a5568",
-    paddingTop: "18px",
-    marginTop: "18px",
-  },
-  sectionTitle: {
-    fontSize: "24px",
-    fontWeight: 700,
-    textAlign: "center",
-    marginBottom: "12px",
-  },
-  card: {
-    background: "#101827",
-    border: "1px solid #334155",
-    borderRadius: "18px",
-    padding: "16px",
-    marginTop: "12px",
-  },
-  input: {
-    width: "100%",
-    padding: "13px 14px",
-    marginBottom: "10px",
-    borderRadius: "14px",
-    border: "1px solid #4b5563",
-    background: "#0f172a",
-    color: "white",
-    fontSize: "16px",
-    boxSizing: "border-box",
-  },
-  textarea: {
-    width: "100%",
-    minHeight: "90px",
-    padding: "13px 14px",
-    marginBottom: "10px",
-    borderRadius: "14px",
-    border: "1px solid #4b5563",
-    background: "#0f172a",
-    color: "white",
-    fontSize: "16px",
-    boxSizing: "border-box",
-    resize: "vertical",
-  },
-  label: {
-    fontSize: "13px",
-    color: "#cbd5e1",
-    marginBottom: "6px",
-    display: "block",
-    fontWeight: 600,
-  },
-  row: {
-    display: "grid",
-    gridTemplateColumns: "1fr",
-    gap: "10px",
-  },
-  subText: {
-    textAlign: "center",
-    color: "#cbd5e1",
-    fontSize: "15px",
-    marginTop: "6px",
-  },
-  badgeRow: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "8px",
-    marginTop: "10px",
-  },
-  badge: {
-    padding: "6px 10px",
-    borderRadius: "999px",
-    fontSize: "13px",
-    fontWeight: 700,
-    border: "1px solid #4b5563",
-    background: "#1f2937",
-    color: "white",
-  },
-  danger: { color: "#ef4444" },
-  medium: { color: "#f59e0b" },
-  low: { color: "#22c55e" },
+const COLORS = {
+  bg: "#07111f",
+  panel: "#0d1b2e",
+  panelAlt: "#11233a",
+  border: "#31445f",
+  softBorder: "#22324b",
+  text: "#f3f6fb",
+  muted: "#b7c2d1",
+  soft: "#8fa0b7",
+  gold: "#d4af37",
+  green: "#22c55e",
+  amber: "#f59e0b",
+  red: "#ef4444",
+  blue: "#60a5fa",
 };
 
 function getSaved(key, fallback) {
@@ -161,10 +54,273 @@ function formatTimestamp(date = new Date()) {
 }
 
 function levelColor(level) {
-  if (level === "High" || level === "HIGH") return "#ef4444";
-  if (level === "Medium" || level === "MEDIUM") return "#f59e0b";
-  return "#22c55e";
+  if (level === "High" || level === "HIGH") return COLORS.red;
+  if (level === "Medium" || level === "MEDIUM") return COLORS.amber;
+  return COLORS.green;
 }
+
+const styles = {
+  page: {
+    background: `linear-gradient(180deg, ${COLORS.bg} 0%, #081524 100%)`,
+    color: COLORS.text,
+    minHeight: "100vh",
+    padding: "18px 14px 42px",
+    fontFamily:
+      'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+  },
+  appShell: {
+    maxWidth: "860px",
+    margin: "0 auto",
+  },
+  titleWrap: {
+    textAlign: "center",
+    marginBottom: "18px",
+  },
+  title: {
+    fontSize: "30px",
+    fontWeight: 800,
+    lineHeight: 1.1,
+    letterSpacing: "-0.03em",
+    marginBottom: "6px",
+  },
+  subtitle: {
+    color: COLORS.gold,
+    fontSize: "12px",
+    letterSpacing: "0.18em",
+    textTransform: "uppercase",
+    fontWeight: 700,
+  },
+  tabRow: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: "10px",
+    marginBottom: "18px",
+  },
+  tabButton: {
+    padding: "11px 16px",
+    borderRadius: "14px",
+    border: `1px solid ${COLORS.border}`,
+    background: COLORS.panelAlt,
+    color: COLORS.text,
+    cursor: "pointer",
+    fontSize: "15px",
+    fontWeight: 700,
+    boxShadow: "0 4px 18px rgba(0,0,0,.16)",
+  },
+  tabButtonActive: {
+    padding: "11px 16px",
+    borderRadius: "14px",
+    border: `1px solid ${COLORS.gold}`,
+    background: "linear-gradient(180deg, #1a2d47 0%, #14253b 100%)",
+    color: "#fff7de",
+    cursor: "pointer",
+    fontSize: "15px",
+    fontWeight: 800,
+    boxShadow: "0 8px 24px rgba(0,0,0,.22)",
+  },
+  section: {
+    marginTop: "18px",
+  },
+  panel: {
+    background: `linear-gradient(180deg, ${COLORS.panel} 0%, #0a1627 100%)`,
+    border: `1px solid ${COLORS.border}`,
+    borderRadius: "20px",
+    padding: "16px",
+    boxShadow: "0 12px 34px rgba(0,0,0,.28)",
+  },
+  sectionTitle: {
+    fontSize: "24px",
+    fontWeight: 800,
+    textAlign: "center",
+    marginBottom: "14px",
+    letterSpacing: "-0.02em",
+  },
+  subHeader: {
+    fontSize: "12px",
+    color: COLORS.gold,
+    textTransform: "uppercase",
+    letterSpacing: "0.16em",
+    fontWeight: 700,
+    marginBottom: "8px",
+  },
+  fieldLabel: {
+    fontSize: "12px",
+    color: COLORS.muted,
+    textTransform: "uppercase",
+    letterSpacing: "0.08em",
+    fontWeight: 700,
+    marginBottom: "6px",
+    display: "block",
+  },
+  input: {
+    width: "100%",
+    padding: "13px 14px",
+    borderRadius: "14px",
+    border: `1px solid ${COLORS.softBorder}`,
+    background: "#0b1728",
+    color: COLORS.text,
+    fontSize: "16px",
+    boxSizing: "border-box",
+    marginBottom: "12px",
+    outline: "none",
+  },
+  textarea: {
+    width: "100%",
+    minHeight: "94px",
+    padding: "13px 14px",
+    borderRadius: "14px",
+    border: `1px solid ${COLORS.softBorder}`,
+    background: "#0b1728",
+    color: COLORS.text,
+    fontSize: "16px",
+    boxSizing: "border-box",
+    marginBottom: "12px",
+    resize: "vertical",
+    outline: "none",
+  },
+  btn: {
+    padding: "12px 16px",
+    borderRadius: "14px",
+    border: `1px solid ${COLORS.border}`,
+    background: COLORS.panelAlt,
+    color: COLORS.text,
+    cursor: "pointer",
+    fontSize: "15px",
+    fontWeight: 700,
+  },
+  btnPrimary: {
+    padding: "12px 18px",
+    borderRadius: "14px",
+    border: `1px solid ${COLORS.gold}`,
+    background: `linear-gradient(180deg, ${COLORS.gold} 0%, #b98b1e 100%)`,
+    color: "#111827",
+    cursor: "pointer",
+    fontSize: "15px",
+    fontWeight: 800,
+    boxShadow: "0 10px 24px rgba(212,175,55,.18)",
+  },
+  btnRow: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: "10px",
+    marginTop: "8px",
+  },
+  threatNumber: {
+    fontSize: "72px",
+    fontWeight: 900,
+    textAlign: "center",
+    lineHeight: 1,
+    marginBottom: "10px",
+    letterSpacing: "-0.04em",
+  },
+  modeText: {
+    textAlign: "center",
+    color: COLORS.muted,
+    fontSize: "15px",
+    marginTop: "10px",
+  },
+  summaryGrid: {
+    display: "grid",
+    gap: "12px",
+    gridTemplateColumns: "1fr",
+    marginTop: "14px",
+  },
+  summaryCard: {
+    background: "rgba(255,255,255,0.02)",
+    border: `1px solid ${COLORS.softBorder}`,
+    borderRadius: "16px",
+    padding: "14px",
+  },
+  summaryLabel: {
+    color: COLORS.soft,
+    fontSize: "12px",
+    textTransform: "uppercase",
+    letterSpacing: "0.08em",
+    fontWeight: 700,
+    marginBottom: "6px",
+  },
+  summaryValue: {
+    fontSize: "16px",
+    fontWeight: 700,
+    lineHeight: 1.5,
+  },
+  alertCard: {
+    background: "linear-gradient(180deg, rgba(255,255,255,.03) 0%, rgba(255,255,255,.01) 100%)",
+    border: `1px solid ${COLORS.softBorder}`,
+    borderRadius: "18px",
+    padding: "16px",
+    marginTop: "12px",
+  },
+  alertTitleRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    gap: "10px",
+    flexWrap: "wrap",
+  },
+  alertTitle: {
+    fontSize: "20px",
+    fontWeight: 800,
+    lineHeight: 1.3,
+    letterSpacing: "-0.02em",
+  },
+  badgeRow: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "8px",
+  },
+  badge: {
+    padding: "6px 10px",
+    borderRadius: "999px",
+    fontSize: "12px",
+    fontWeight: 800,
+    letterSpacing: "0.02em",
+  },
+  detailList: {
+    color: COLORS.muted,
+    lineHeight: 1.75,
+    marginTop: "10px",
+    fontSize: "15px",
+  },
+  detailStrong: {
+    color: COLORS.text,
+    fontWeight: 700,
+  },
+  emptyState: {
+    textAlign: "center",
+    color: COLORS.muted,
+    padding: "16px 4px",
+    fontSize: "16px",
+  },
+  briefCard: {
+    background: "linear-gradient(180deg, rgba(17,35,58,.95) 0%, rgba(10,22,39,.95) 100%)",
+    border: `1px solid ${COLORS.border}`,
+    borderRadius: "20px",
+    padding: "18px",
+    marginTop: "14px",
+    boxShadow: "0 10px 30px rgba(0,0,0,.22)",
+  },
+  briefTitle: {
+    fontSize: "26px",
+    fontWeight: 900,
+    lineHeight: 1.2,
+    marginBottom: "10px",
+    letterSpacing: "-0.03em",
+  },
+  briefSection: {
+    marginTop: "14px",
+    color: COLORS.muted,
+    lineHeight: 1.8,
+    fontSize: "15px",
+  },
+  divider: {
+    height: "1px",
+    background: COLORS.softBorder,
+    margin: "14px 0",
+  },
+};
 
 function badgeStyle(bg, border, color = "white") {
   return {
@@ -230,10 +386,7 @@ export default function App() {
   }, [mode]);
 
   useEffect(() => {
-    localStorage.setItem(
-      STORAGE_KEYS.manualThreat,
-      JSON.stringify(manualThreat),
-    );
+    localStorage.setItem(STORAGE_KEYS.manualThreat, JSON.stringify(manualThreat));
   }, [manualThreat]);
 
   useEffect(() => {
@@ -245,10 +398,7 @@ export default function App() {
   }, [intelOutput]);
 
   useEffect(() => {
-    localStorage.setItem(
-      STORAGE_KEYS.itineraryOutput,
-      JSON.stringify(itineraryOutput),
-    );
+    localStorage.setItem(STORAGE_KEYS.itineraryOutput, JSON.stringify(itineraryOutput));
   }, [itineraryOutput]);
 
   const activeAlerts = useMemo(
@@ -263,9 +413,8 @@ export default function App() {
     return "LOW";
   }, [mode, manualThreat, activeAlerts]);
 
-  const threatColor = levelColor(threatLevel);
-
   const latestAlert = activeAlerts[0] || null;
+  const threatColor = levelColor(threatLevel);
 
   const addAlert = () => {
     if (!alertForm.title.trim()) return;
@@ -291,11 +440,7 @@ export default function App() {
   };
 
   const clearAlert = (id) => {
-    setAlerts((prev) =>
-      prev.map((a) =>
-        a.id === id ? { ...a, status: "Cleared" } : a,
-      ),
-    );
+    setAlerts((prev) => prev.map((a) => (a.id === id ? { ...a, status: "Cleared" } : a)));
   };
 
   const removeAlert = (id) => {
@@ -316,31 +461,29 @@ export default function App() {
 
     const threatConsiderations =
       risk === "High"
-        ? "Elevated public recognition, opportunistic approach risk, and increased need for controlled movement planning."
+        ? "High-visibility principal with elevated likelihood of recognition, crowd focus, opportunistic approach attempts, and heightened movement exposure."
         : risk === "Medium"
-          ? "Moderate visibility with potential exposure at arrival, departure, and publicly accessible choke points."
-          : "Lower visibility profile, though entry/exit and vehicle-side exposure still require monitoring.";
+          ? "Moderate public exposure profile with increased concern at arrival/departure points, waiting positions, and open-access areas."
+          : "Lower recognition profile, though standard entry/exit, curbside, and vehicle-side exposure remains relevant.";
 
     const exposureConcerns =
       intelForm.location === "Rolex Rodeo" || intelForm.location === "Patek Rodeo"
-        ? "Luxury retail frontage, sidewalk exposure, curbside pickup visibility, and tourist foot traffic."
-        : "Mall circulation, parking access points, elevator/stairwell exposure, and shared public interior routes.";
+        ? "Storefront visibility, sidewalk congestion, luxury retail attention, curbside pickup observation, and adjacent pedestrian traffic."
+        : "Structured parking access, interior mall circulation, elevator/stairwell choke points, and shared public movement corridors.";
 
     const movementConcerns =
       risk === "High"
-        ? "Advance route discipline, controlled ingress/egress, and proactive observation of crowd behavior recommended."
-        : "Monitor vehicle approach, curbside pauses, and public congregation points during movement.";
+        ? "Require deliberate route discipline, reduced curbside dwell time, controlled ingress/egress, and proactive scan of crowd behavior before movement."
+        : "Monitor route exposure, pause points, parking interfaces, and public congregation near arrival and departure.";
 
     const posture =
       risk === "High"
-        ? "Enhanced close-watch posture with controlled movement and tighter exposure management."
+        ? "Enhanced executive posture: controlled movement, tighter environmental watch, reduced exposure windows, and active principal-side positioning."
         : risk === "Medium"
-          ? "Balanced protective posture with focus on route discipline and environmental awareness."
-          : "Low-profile monitoring with emphasis on entry/exit awareness and visible anomalies.";
+          ? "Balanced protective posture: maintain low-profile presence with emphasis on route control and anomaly recognition."
+          : "Low-profile monitoring posture: maintain environmental awareness and preserve flexibility at movement points.";
 
-    const summary = `${intelForm.name} is assessed as a ${risk.toLowerCase()}-to-${
-      risk === "High" ? "elevated" : risk.toLowerCase()
-    } exposure principal based on visibility, location, and expected public interaction.`;
+    const summary = `${intelForm.name} is assessed as a ${risk.toLowerCase()}-risk principal for ${intelForm.location}, with primary concerns centered on public exposure, movement visibility, and approach opportunities around ingress/egress windows.`;
 
     setIntelOutput({
       principal: intelForm.name,
@@ -359,26 +502,27 @@ export default function App() {
   };
 
   const generateItinerary = () => {
-    if (!itineraryForm.hotel && !itineraryForm.route && !itineraryForm.venue)
-      return;
+    if (!itineraryForm.hotel && !itineraryForm.route && !itineraryForm.venue) return;
 
     const risk =
       itineraryForm.venue || itineraryForm.route ? "Moderate" : "Low";
 
     const routeConsiderations = itineraryForm.route
-      ? `Primary route noted as: ${itineraryForm.route}. Review alternative access and delays before movement.`
-      : "No dedicated route entered. Establish primary and alternate movement route before execution.";
+      ? `Primary route entered as "${itineraryForm.route}". Confirm alternate routing, traffic contingencies, and any forced slowdown points before movement.`
+      : "No primary route entered. Establish primary and alternate movement routes before execution.";
 
     const ingressEgress = itineraryForm.venue
-      ? `Venue ingress/egress should be reviewed in advance for choke points, curbside exposure, and staging flow around ${itineraryForm.venue}.`
-      : "Venue ingress/egress not entered. Confirm access, exits, and rally points before movement.";
+      ? `Review ingress and egress around ${itineraryForm.venue}, with focus on curbside exposure, choke points, staging flow, and fallback movement options.`
+      : "Venue ingress/egress not entered. Confirm access points, exits, rally options, and curbside conditions before movement.";
 
     const exposurePoints =
-      "Key exposure points include curbside loading, pedestrian bottlenecks, parking interfaces, and delayed departure windows.";
+      "Primary exposure points likely include hotel frontage, curbside loading/unloading, waiting positions, pedestrian bottlenecks, parking interfaces, and delayed departure windows.";
 
     const movementNotes =
       itineraryForm.notes?.trim() ||
-      "Maintain movement discipline, identify fallback options, and confirm POC readiness prior to movement.";
+      "Maintain disciplined movement timing, confirm POC readiness, and reduce unnecessary dwell time at transition points.";
+
+    const summary = `Movement plan prepared for hotel-to-venue movement with primary focus on route discipline, exposure reduction, and controlled ingress/egress.`;
 
     setItineraryOutput({
       hotel: itineraryForm.hotel || "Not entered",
@@ -390,6 +534,7 @@ export default function App() {
       ingressEgress,
       exposurePoints,
       movementNotes,
+      summary,
       generatedAt: formatTimestamp(),
     });
   };
@@ -397,7 +542,7 @@ export default function App() {
   const tabButton = (value, label) => (
     <button
       key={value}
-      style={tab === value ? styles.buttonActive : styles.button}
+      style={tab === value ? styles.tabButtonActive : styles.tabButton}
       onClick={() => setTab(value)}
     >
       {label}
@@ -406,139 +551,241 @@ export default function App() {
 
   return (
     <div style={styles.page}>
-      <h1 style={styles.title}>🛡️ EP Command Dashboard</h1>
+      <div style={styles.appShell}>
+        <div style={styles.titleWrap}>
+          <div style={styles.title}>🛡️ EP Command Dashboard</div>
+          <div style={styles.subtitle}>Executive Command Center</div>
+        </div>
 
-      <div style={styles.tabsWrap}>
-        {tabButton("dashboard", "Dashboard")}
-        {tabButton("intel", "Intel")}
-        {tabButton("itinerary", "Itinerary")}
-        {tabButton("alerts", "Alerts")}
-      </div>
+        <div style={styles.tabRow}>
+          {tabButton("dashboard", "Dashboard")}
+          {tabButton("intel", "Intel")}
+          {tabButton("itinerary", "Itinerary")}
+          {tabButton("alerts", "Alerts")}
+        </div>
 
-      {tab === "dashboard" && (
-        <>
-          <div style={styles.card}>
-            <div style={{ ...styles.label, textAlign: "center" }}>
-              Current Location
-            </div>
-            <select
-              style={styles.input}
-              value={location}
-              onChange={(e) => {
-                setLocation(e.target.value);
-                setAlertForm((prev) => ({ ...prev, location: e.target.value }));
-                setIntelForm((prev) => ({ ...prev, location: e.target.value }));
-              }}
-            >
-              {LOCATIONS.map((loc) => (
-                <option key={loc} value={loc}>
-                  {loc}
-                </option>
-              ))}
-            </select>
-
-            <div style={{ ...styles.sectionTitle, marginTop: "4px" }}>
-              Threat Level
-            </div>
-            <div
-              style={{
-                textAlign: "center",
-                fontSize: "64px",
-                fontWeight: 800,
-                color: threatColor,
-                lineHeight: 1,
-                marginBottom: "10px",
-              }}
-            >
-              {threatLevel}
-            </div>
-
-            <div style={styles.tabsWrap}>
-              <button
-                style={mode === "auto" ? styles.buttonActive : styles.button}
-                onClick={() => setMode("auto")}
+        {tab === "dashboard" && (
+          <>
+            <div style={styles.panel}>
+              <div style={styles.subHeader}>Current Location</div>
+              <select
+                style={styles.input}
+                value={location}
+                onChange={(e) => {
+                  setLocation(e.target.value);
+                  setAlertForm((prev) => ({ ...prev, location: e.target.value }));
+                  setIntelForm((prev) => ({ ...prev, location: e.target.value }));
+                }}
               >
-                AUTO
-              </button>
-              <button
-                style={mode === "manual" ? styles.buttonActive : styles.button}
-                onClick={() => setMode("manual")}
-              >
-                MANUAL
-              </button>
-            </div>
-
-            {mode === "manual" && (
-              <div style={styles.tabsWrap}>
-                {["LOW", "MEDIUM", "HIGH"].map((lvl) => (
-                  <button
-                    key={lvl}
-                    style={manualThreat === lvl ? styles.buttonActive : styles.button}
-                    onClick={() => setManualThreat(lvl)}
-                  >
-                    {lvl}
-                  </button>
+                {LOCATIONS.map((loc) => (
+                  <option key={loc} value={loc}>
+                    {loc}
+                  </option>
                 ))}
-              </div>
-            )}
+              </select>
 
-            <div style={styles.subText}>
-              Mode: {mode === "auto" ? "Auto from Active Alerts" : "Manual Override"}
+              <div style={styles.sectionTitle}>Threat Level</div>
+              <div style={{ ...styles.threatNumber, color: threatColor }}>
+                {threatLevel}
+              </div>
+
+              <div style={styles.btnRow}>
+                <button
+                  style={mode === "auto" ? styles.tabButtonActive : styles.btn}
+                  onClick={() => setMode("auto")}
+                >
+                  AUTO
+                </button>
+                <button
+                  style={mode === "manual" ? styles.tabButtonActive : styles.btn}
+                  onClick={() => setMode("manual")}
+                >
+                  MANUAL
+                </button>
+              </div>
+
+              {mode === "manual" && (
+                <div style={styles.btnRow}>
+                  {["LOW", "MEDIUM", "HIGH"].map((lvl) => (
+                    <button
+                      key={lvl}
+                      style={manualThreat === lvl ? styles.tabButtonActive : styles.btn}
+                      onClick={() => setManualThreat(lvl)}
+                    >
+                      {lvl}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <div style={styles.modeText}>
+                Mode: {mode === "auto" ? "Auto from Active Alerts" : "Manual Override"}
+              </div>
+
+              <div style={styles.section}>
+                <div style={styles.sectionTitle}>Operational Summary</div>
+                <div style={styles.summaryGrid}>
+                  <div style={styles.summaryCard}>
+                    <div style={styles.summaryLabel}>Location</div>
+                    <div style={styles.summaryValue}>{location}</div>
+                  </div>
+                  <div style={styles.summaryCard}>
+                    <div style={styles.summaryLabel}>Active Alerts</div>
+                    <div style={styles.summaryValue}>{activeAlerts.length}</div>
+                  </div>
+                  <div style={styles.summaryCard}>
+                    <div style={styles.summaryLabel}>Latest Alert</div>
+                    <div style={styles.summaryValue}>
+                      {latestAlert ? latestAlert.title : "No active alerts"}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div style={styles.section}>
-              <div style={styles.sectionTitle}>Operational Summary</div>
-              <div style={{ color: "#cbd5e1", lineHeight: 1.7 }}>
-                <div>
-                  <strong>Location:</strong> {location}
+              <div style={styles.sectionTitle}>Active Alerts</div>
+              {activeAlerts.length === 0 ? (
+                <div style={styles.panel}>
+                  <div style={styles.emptyState}>No active alerts.</div>
                 </div>
-                <div>
-                  <strong>Active Alerts:</strong> {activeAlerts.length}
-                </div>
-                <div>
-                  <strong>Latest Alert:</strong>{" "}
-                  {latestAlert ? latestAlert.title : "No active alerts"}
-                </div>
+              ) : (
+                activeAlerts.map((alert) => (
+                  <div key={alert.id} style={styles.alertCard}>
+                    <div style={styles.alertTitleRow}>
+                      <div style={styles.alertTitle}>{alert.title}</div>
+                      <div style={styles.badgeRow}>
+                        <span style={badgeStyle("#172554", "#1d4ed8", "#93c5fd")}>
+                          {alert.category}
+                        </span>
+                        <span
+                          style={badgeStyle(
+                            `${levelColor(alert.level)}22`,
+                            levelColor(alert.level),
+                            levelColor(alert.level),
+                          )}
+                        >
+                          {alert.level}
+                        </span>
+                        <span style={badgeStyle("#052e16", "#16a34a", "#4ade80")}>
+                          {alert.status}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div style={styles.detailList}>
+                      <div>
+                        <span style={styles.detailStrong}>Location:</span> {alert.location}
+                      </div>
+                      <div>
+                        <span style={styles.detailStrong}>Time:</span> {alert.timestamp}
+                      </div>
+                      {alert.notes ? (
+                        <div>
+                          <span style={styles.detailStrong}>Notes:</span> {alert.notes}
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div style={styles.section}>
+              <div style={styles.sectionTitle}>Add Alert</div>
+              <div style={styles.panel}>
+                <label style={styles.fieldLabel}>Title</label>
+                <input
+                  style={styles.input}
+                  placeholder="Enter alert title"
+                  value={alertForm.title}
+                  onChange={(e) =>
+                    setAlertForm((prev) => ({ ...prev, title: e.target.value }))
+                  }
+                />
+
+                <label style={styles.fieldLabel}>Category</label>
+                <select
+                  style={styles.input}
+                  value={alertForm.category}
+                  onChange={(e) =>
+                    setAlertForm((prev) => ({ ...prev, category: e.target.value }))
+                  }
+                >
+                  {ALERT_CATEGORIES.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+
+                <label style={styles.fieldLabel}>Level</label>
+                <select
+                  style={styles.input}
+                  value={alertForm.level}
+                  onChange={(e) =>
+                    setAlertForm((prev) => ({ ...prev, level: e.target.value }))
+                  }
+                >
+                  {ALERT_LEVELS.map((lvl) => (
+                    <option key={lvl} value={lvl}>
+                      {lvl}
+                    </option>
+                  ))}
+                </select>
+
+                <label style={styles.fieldLabel}>Location</label>
+                <select
+                  style={styles.input}
+                  value={alertForm.location}
+                  onChange={(e) =>
+                    setAlertForm((prev) => ({ ...prev, location: e.target.value }))
+                  }
+                >
+                  {LOCATIONS.map((loc) => (
+                    <option key={loc} value={loc}>
+                      {loc}
+                    </option>
+                  ))}
+                </select>
+
+                <label style={styles.fieldLabel}>Notes</label>
+                <textarea
+                  style={styles.textarea}
+                  placeholder="Operator notes"
+                  value={alertForm.notes}
+                  onChange={(e) =>
+                    setAlertForm((prev) => ({ ...prev, notes: e.target.value }))
+                  }
+                />
+
+                <button style={styles.btnPrimary} onClick={addAlert}>
+                  Add Alert
+                </button>
               </div>
             </div>
-          </div>
+          </>
+        )}
 
+        {tab === "alerts" && (
           <div style={styles.section}>
-            <div style={styles.sectionTitle}>Active Alerts</div>
-            {activeAlerts.length === 0 ? (
-              <div style={styles.card}>
-                <div style={{ textAlign: "center", color: "#cbd5e1" }}>
-                  No active alerts.
-                </div>
+            <div style={styles.sectionTitle}>All Alerts</div>
+            {alerts.length === 0 ? (
+              <div style={styles.panel}>
+                <div style={styles.emptyState}>No alerts created yet.</div>
               </div>
             ) : (
-              activeAlerts.map((alert) => (
-                <div key={alert.id} style={styles.card}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      gap: "10px",
-                      alignItems: "flex-start",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <div style={{ fontSize: "20px", fontWeight: 700 }}>
-                      {alert.title}
-                    </div>
+              alerts.map((alert) => (
+                <div key={alert.id} style={styles.alertCard}>
+                  <div style={styles.alertTitleRow}>
+                    <div style={styles.alertTitle}>{alert.title}</div>
                     <div style={styles.badgeRow}>
-                      <span
-                        style={badgeStyle(
-                          "#1e293b",
-                          "#475569",
-                          "#e2e8f0",
-                        )}
-                      >
+                      <span style={badgeStyle("#172554", "#1d4ed8", "#93c5fd")}>
                         {alert.category}
                       </span>
                       <span
                         style={badgeStyle(
-                          levelColor(alert.level) + "22",
+                          `${levelColor(alert.level)}22`,
                           levelColor(alert.level),
                           levelColor(alert.level),
                         )}
@@ -546,84 +793,92 @@ export default function App() {
                         {alert.level}
                       </span>
                       <span
-                        style={badgeStyle(
-                          alert.status === "Active" ? "#052e16" : "#3f3f46",
-                          alert.status === "Active" ? "#16a34a" : "#71717a",
-                          alert.status === "Active" ? "#4ade80" : "#d4d4d8",
-                        )}
+                        style={
+                          alert.status === "Active"
+                            ? badgeStyle("#052e16", "#16a34a", "#4ade80")
+                            : badgeStyle("#3f3f46", "#71717a", "#d4d4d8")
+                        }
                       >
                         {alert.status}
                       </span>
                     </div>
                   </div>
 
-                  <div style={{ color: "#cbd5e1", marginTop: "10px", lineHeight: 1.7 }}>
+                  <div style={styles.detailList}>
                     <div>
-                      <strong>Location:</strong> {alert.location}
+                      <span style={styles.detailStrong}>Location:</span> {alert.location}
                     </div>
                     <div>
-                      <strong>Time:</strong> {alert.timestamp}
+                      <span style={styles.detailStrong}>Time:</span> {alert.timestamp}
                     </div>
                     {alert.notes ? (
                       <div>
-                        <strong>Notes:</strong> {alert.notes}
+                        <span style={styles.detailStrong}>Notes:</span> {alert.notes}
                       </div>
                     ) : null}
+                  </div>
+
+                  <div style={styles.btnRow}>
+                    {alert.status === "Active" && (
+                      <button style={styles.btn} onClick={() => clearAlert(alert.id)}>
+                        Mark Cleared
+                      </button>
+                    )}
+                    <button style={styles.btn} onClick={() => removeAlert(alert.id)}>
+                      Delete
+                    </button>
                   </div>
                 </div>
               ))
             )}
           </div>
+        )}
 
+        {tab === "intel" && (
           <div style={styles.section}>
-            <div style={styles.sectionTitle}>Add Alert</div>
-            <div style={styles.card}>
-              <label style={styles.label}>Title</label>
+            <div style={styles.sectionTitle}>Client Intel</div>
+            <div style={styles.panel}>
+              <label style={styles.fieldLabel}>Principal Name</label>
               <input
                 style={styles.input}
-                placeholder="Enter alert title"
-                value={alertForm.title}
+                placeholder="Name"
+                value={intelForm.name}
                 onChange={(e) =>
-                  setAlertForm((prev) => ({ ...prev, title: e.target.value }))
+                  setIntelForm((prev) => ({ ...prev, name: e.target.value }))
                 }
               />
 
-              <label style={styles.label}>Category</label>
+              <label style={styles.fieldLabel}>Role / Title</label>
+              <input
+                style={styles.input}
+                placeholder="Role / Title"
+                value={intelForm.role}
+                onChange={(e) =>
+                  setIntelForm((prev) => ({ ...prev, role: e.target.value }))
+                }
+              />
+
+              <label style={styles.fieldLabel}>Visibility Level</label>
               <select
                 style={styles.input}
-                value={alertForm.category}
+                value={intelForm.visibility}
                 onChange={(e) =>
-                  setAlertForm((prev) => ({ ...prev, category: e.target.value }))
+                  setIntelForm((prev) => ({ ...prev, visibility: e.target.value }))
                 }
               >
-                {ALERT_CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
+                {VISIBILITY_LEVELS.map((v) => (
+                  <option key={v} value={v}>
+                    {v}
                   </option>
                 ))}
               </select>
 
-              <label style={styles.label}>Level</label>
+              <label style={styles.fieldLabel}>Location</label>
               <select
                 style={styles.input}
-                value={alertForm.level}
+                value={intelForm.location}
                 onChange={(e) =>
-                  setAlertForm((prev) => ({ ...prev, level: e.target.value }))
-                }
-              >
-                {ALERT_LEVELS.map((lvl) => (
-                  <option key={lvl} value={lvl}>
-                    {lvl}
-                  </option>
-                ))}
-              </select>
-
-              <label style={styles.label}>Location</label>
-              <select
-                style={styles.input}
-                value={alertForm.location}
-                onChange={(e) =>
-                  setAlertForm((prev) => ({ ...prev, location: e.target.value }))
+                  setIntelForm((prev) => ({ ...prev, location: e.target.value }))
                 }
               >
                 {LOCATIONS.map((loc) => (
@@ -633,343 +888,215 @@ export default function App() {
                 ))}
               </select>
 
-              <label style={styles.label}>Notes</label>
+              <label style={styles.fieldLabel}>Context / Notes</label>
               <textarea
                 style={styles.textarea}
-                placeholder="Operator notes"
-                value={alertForm.notes}
+                placeholder="Context, event notes, known concerns"
+                value={intelForm.notes}
                 onChange={(e) =>
-                  setAlertForm((prev) => ({ ...prev, notes: e.target.value }))
+                  setIntelForm((prev) => ({ ...prev, notes: e.target.value }))
                 }
               />
 
-              <button style={styles.buttonActive} onClick={addAlert}>
-                Add Alert
+              <button style={styles.btnPrimary} onClick={runIntel}>
+                Generate Intel Brief
               </button>
             </div>
-          </div>
-        </>
-      )}
 
-      {tab === "alerts" && (
-        <div style={styles.section}>
-          <div style={styles.sectionTitle}>All Alerts</div>
-          {alerts.length === 0 ? (
-            <div style={styles.card}>
-              <div style={{ textAlign: "center", color: "#cbd5e1" }}>
-                No alerts created yet.
-              </div>
-            </div>
-          ) : (
-            alerts.map((alert) => (
-              <div key={alert.id} style={styles.card}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    gap: "10px",
-                    alignItems: "flex-start",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  <div style={{ fontSize: "20px", fontWeight: 700 }}>
-                    {alert.title}
-                  </div>
-                  <div style={styles.badgeRow}>
-                    <span
-                      style={badgeStyle(
-                        "#1e293b",
-                        "#475569",
-                        "#e2e8f0",
-                      )}
-                    >
-                      {alert.category}
-                    </span>
-                    <span
-                      style={badgeStyle(
-                        levelColor(alert.level) + "22",
-                        levelColor(alert.level),
-                        levelColor(alert.level),
-                      )}
-                    >
-                      {alert.level}
-                    </span>
-                    <span
-                      style={badgeStyle(
-                        alert.status === "Active" ? "#052e16" : "#3f3f46",
-                        alert.status === "Active" ? "#16a34a" : "#71717a",
-                        alert.status === "Active" ? "#4ade80" : "#d4d4d8",
-                      )}
-                    >
-                      {alert.status}
-                    </span>
-                  </div>
-                </div>
-
-                <div style={{ color: "#cbd5e1", marginTop: "10px", lineHeight: 1.7 }}>
-                  <div>
-                    <strong>Location:</strong> {alert.location}
-                  </div>
-                  <div>
-                    <strong>Time:</strong> {alert.timestamp}
-                  </div>
-                  {alert.notes ? (
-                    <div>
-                      <strong>Notes:</strong> {alert.notes}
-                    </div>
-                  ) : null}
-                </div>
+            {intelOutput && (
+              <div style={styles.briefCard}>
+                <div style={styles.subHeader}>Protective Intelligence Brief</div>
+                <div style={styles.briefTitle}>{intelOutput.principal}</div>
 
                 <div style={styles.badgeRow}>
-                  {alert.status === "Active" && (
-                    <button style={styles.button} onClick={() => clearAlert(alert.id)}>
-                      Mark Cleared
-                    </button>
-                  )}
-                  <button style={styles.button} onClick={() => removeAlert(alert.id)}>
-                    Delete
-                  </button>
+                  <span style={badgeStyle("#1e293b", "#475569", COLORS.text)}>
+                    {intelOutput.role}
+                  </span>
+                  <span
+                    style={badgeStyle(
+                      `${levelColor(intelOutput.risk)}22`,
+                      levelColor(intelOutput.risk),
+                      levelColor(intelOutput.risk),
+                    )}
+                  >
+                    Risk: {intelOutput.risk}
+                  </span>
+                  <span style={badgeStyle("#172554", "#1d4ed8", "#93c5fd")}>
+                    Visibility: {intelOutput.visibility}
+                  </span>
+                  <span style={badgeStyle("#1f2937", "#475569", COLORS.muted)}>
+                    {intelOutput.location}
+                  </span>
+                </div>
+
+                <div style={styles.divider} />
+
+                <div style={styles.briefSection}>
+                  <strong style={styles.detailStrong}>Threat Considerations:</strong>{" "}
+                  {intelOutput.threatConsiderations}
+                </div>
+
+                <div style={styles.briefSection}>
+                  <strong style={styles.detailStrong}>Public Exposure Concerns:</strong>{" "}
+                  {intelOutput.exposureConcerns}
+                </div>
+
+                <div style={styles.briefSection}>
+                  <strong style={styles.detailStrong}>Movement Concerns:</strong>{" "}
+                  {intelOutput.movementConcerns}
+                </div>
+
+                <div style={styles.briefSection}>
+                  <strong style={styles.detailStrong}>Recommended Protection Posture:</strong>{" "}
+                  {intelOutput.posture}
+                </div>
+
+                <div style={styles.briefSection}>
+                  <strong style={styles.detailStrong}>Operator Notes:</strong>{" "}
+                  {intelOutput.notes}
+                </div>
+
+                <div style={styles.divider} />
+
+                <div style={styles.briefSection}>
+                  <strong style={styles.detailStrong}>Summary:</strong>{" "}
+                  {intelOutput.summary}
+                </div>
+
+                <div style={{ ...styles.briefSection, color: COLORS.soft }}>
+                  Generated: {intelOutput.generatedAt}
                 </div>
               </div>
-            ))
-          )}
-        </div>
-      )}
-
-      {tab === "intel" && (
-        <div style={styles.section}>
-          <div style={styles.sectionTitle}>Client Intel</div>
-          <div style={styles.card}>
-            <label style={styles.label}>Principal Name</label>
-            <input
-              style={styles.input}
-              placeholder="Name"
-              value={intelForm.name}
-              onChange={(e) =>
-                setIntelForm((prev) => ({ ...prev, name: e.target.value }))
-              }
-            />
-
-            <label style={styles.label}>Role / Title</label>
-            <input
-              style={styles.input}
-              placeholder="Role / Title"
-              value={intelForm.role}
-              onChange={(e) =>
-                setIntelForm((prev) => ({ ...prev, role: e.target.value }))
-              }
-            />
-
-            <label style={styles.label}>Visibility Level</label>
-            <select
-              style={styles.input}
-              value={intelForm.visibility}
-              onChange={(e) =>
-                setIntelForm((prev) => ({ ...prev, visibility: e.target.value }))
-              }
-            >
-              {VISIBILITY_LEVELS.map((v) => (
-                <option key={v} value={v}>
-                  {v}
-                </option>
-              ))}
-            </select>
-
-            <label style={styles.label}>Location</label>
-            <select
-              style={styles.input}
-              value={intelForm.location}
-              onChange={(e) =>
-                setIntelForm((prev) => ({ ...prev, location: e.target.value }))
-              }
-            >
-              {LOCATIONS.map((loc) => (
-                <option key={loc} value={loc}>
-                  {loc}
-                </option>
-              ))}
-            </select>
-
-            <label style={styles.label}>Context / Notes</label>
-            <textarea
-              style={styles.textarea}
-              placeholder="Context, event notes, known concerns"
-              value={intelForm.notes}
-              onChange={(e) =>
-                setIntelForm((prev) => ({ ...prev, notes: e.target.value }))
-              }
-            />
-
-            <button style={styles.buttonActive} onClick={runIntel}>
-              Run Intel
-            </button>
+            )}
           </div>
+        )}
 
-          {intelOutput && (
-            <div style={styles.card}>
-              <div style={{ fontSize: "24px", fontWeight: 800, marginBottom: "10px" }}>
-                {intelOutput.principal}
-              </div>
+        {tab === "itinerary" && (
+          <div style={styles.section}>
+            <div style={styles.sectionTitle}>Itinerary Builder</div>
+            <div style={styles.panel}>
+              <label style={styles.fieldLabel}>Hotel</label>
+              <input
+                style={styles.input}
+                placeholder="Hotel"
+                value={itineraryForm.hotel}
+                onChange={(e) =>
+                  setItineraryForm((prev) => ({ ...prev, hotel: e.target.value }))
+                }
+              />
 
-              <div style={styles.badgeRow}>
-                <span style={badgeStyle("#1e293b", "#475569")}>
-                  {intelOutput.role}
-                </span>
-                <span
-                  style={badgeStyle(
-                    levelColor(intelOutput.risk) + "22",
-                    levelColor(intelOutput.risk),
-                    levelColor(intelOutput.risk),
-                  )}
-                >
-                  Risk: {intelOutput.risk}
-                </span>
-                <span style={badgeStyle("#1e293b", "#475569")}>
-                  Visibility: {intelOutput.visibility}
-                </span>
-              </div>
+              <label style={styles.fieldLabel}>Route</label>
+              <input
+                style={styles.input}
+                placeholder="Route"
+                value={itineraryForm.route}
+                onChange={(e) =>
+                  setItineraryForm((prev) => ({ ...prev, route: e.target.value }))
+                }
+              />
 
-              <div style={{ color: "#cbd5e1", lineHeight: 1.75, marginTop: "14px" }}>
-                <div>
-                  <strong>Location:</strong> {intelOutput.location}
-                </div>
-                <div>
-                  <strong>Generated:</strong> {intelOutput.generatedAt}
-                </div>
-                <div style={{ marginTop: "10px" }}>
-                  <strong>Threat Considerations:</strong> {intelOutput.threatConsiderations}
-                </div>
-                <div style={{ marginTop: "10px" }}>
-                  <strong>Public Exposure Concerns:</strong> {intelOutput.exposureConcerns}
-                </div>
-                <div style={{ marginTop: "10px" }}>
-                  <strong>Movement Concerns:</strong> {intelOutput.movementConcerns}
-                </div>
-                <div style={{ marginTop: "10px" }}>
-                  <strong>Recommended Protection Posture:</strong> {intelOutput.posture}
-                </div>
-                <div style={{ marginTop: "10px" }}>
-                  <strong>Summary:</strong> {intelOutput.summary}
-                </div>
-                <div style={{ marginTop: "10px" }}>
-                  <strong>Operator Notes:</strong> {intelOutput.notes}
-                </div>
-              </div>
+              <label style={styles.fieldLabel}>Venue</label>
+              <input
+                style={styles.input}
+                placeholder="Venue"
+                value={itineraryForm.venue}
+                onChange={(e) =>
+                  setItineraryForm((prev) => ({ ...prev, venue: e.target.value }))
+                }
+              />
+
+              <label style={styles.fieldLabel}>POC</label>
+              <input
+                style={styles.input}
+                placeholder="POC"
+                value={itineraryForm.poc}
+                onChange={(e) =>
+                  setItineraryForm((prev) => ({ ...prev, poc: e.target.value }))
+                }
+              />
+
+              <label style={styles.fieldLabel}>Movement Notes</label>
+              <textarea
+                style={styles.textarea}
+                placeholder="Movement notes"
+                value={itineraryForm.notes}
+                onChange={(e) =>
+                  setItineraryForm((prev) => ({ ...prev, notes: e.target.value }))
+                }
+              />
+
+              <button style={styles.btnPrimary} onClick={generateItinerary}>
+                Generate Movement Brief
+              </button>
             </div>
-          )}
-        </div>
-      )}
 
-      {tab === "itinerary" && (
-        <div style={styles.section}>
-          <div style={styles.sectionTitle}>Itinerary Builder</div>
-          <div style={styles.card}>
-            <label style={styles.label}>Hotel</label>
-            <input
-              style={styles.input}
-              placeholder="Hotel"
-              value={itineraryForm.hotel}
-              onChange={(e) =>
-                setItineraryForm((prev) => ({ ...prev, hotel: e.target.value }))
-              }
-            />
+            {itineraryOutput && (
+              <div style={styles.briefCard}>
+                <div style={styles.subHeader}>Operational Movement Brief</div>
+                <div style={styles.briefTitle}>{itineraryOutput.venue}</div>
 
-            <label style={styles.label}>Route</label>
-            <input
-              style={styles.input}
-              placeholder="Route"
-              value={itineraryForm.route}
-              onChange={(e) =>
-                setItineraryForm((prev) => ({ ...prev, route: e.target.value }))
-              }
-            />
+                <div style={styles.badgeRow}>
+                  <span
+                    style={badgeStyle(
+                      `${levelColor(itineraryOutput.risk)}22`,
+                      levelColor(itineraryOutput.risk),
+                      levelColor(itineraryOutput.risk),
+                    )}
+                  >
+                    Risk: {itineraryOutput.risk}
+                  </span>
+                  <span style={badgeStyle("#1f2937", "#475569", COLORS.text)}>
+                    Hotel: {itineraryOutput.hotel}
+                  </span>
+                </div>
 
-            <label style={styles.label}>Venue</label>
-            <input
-              style={styles.input}
-              placeholder="Venue"
-              value={itineraryForm.venue}
-              onChange={(e) =>
-                setItineraryForm((prev) => ({ ...prev, venue: e.target.value }))
-              }
-            />
+                <div style={styles.divider} />
 
-            <label style={styles.label}>POC</label>
-            <input
-              style={styles.input}
-              placeholder="POC"
-              value={itineraryForm.poc}
-              onChange={(e) =>
-                setItineraryForm((prev) => ({ ...prev, poc: e.target.value }))
-              }
-            />
+                <div style={styles.briefSection}>
+                  <strong style={styles.detailStrong}>Route:</strong>{" "}
+                  {itineraryOutput.route}
+                </div>
 
-            <label style={styles.label}>Notes</label>
-            <textarea
-              style={styles.textarea}
-              placeholder="Movement notes"
-              value={itineraryForm.notes}
-              onChange={(e) =>
-                setItineraryForm((prev) => ({ ...prev, notes: e.target.value }))
-              }
-            />
+                <div style={styles.briefSection}>
+                  <strong style={styles.detailStrong}>POC:</strong>{" "}
+                  {itineraryOutput.poc}
+                </div>
 
-            <button style={styles.buttonActive} onClick={generateItinerary}>
-              Generate Plan
-            </button>
+                <div style={styles.briefSection}>
+                  <strong style={styles.detailStrong}>Route Considerations:</strong>{" "}
+                  {itineraryOutput.routeConsiderations}
+                </div>
+
+                <div style={styles.briefSection}>
+                  <strong style={styles.detailStrong}>Ingress / Egress Notes:</strong>{" "}
+                  {itineraryOutput.ingressEgress}
+                </div>
+
+                <div style={styles.briefSection}>
+                  <strong style={styles.detailStrong}>Exposure Points:</strong>{" "}
+                  {itineraryOutput.exposurePoints}
+                </div>
+
+                <div style={styles.briefSection}>
+                  <strong style={styles.detailStrong}>Recommended Movement Notes:</strong>{" "}
+                  {itineraryOutput.movementNotes}
+                </div>
+
+                <div style={styles.divider} />
+
+                <div style={styles.briefSection}>
+                  <strong style={styles.detailStrong}>Summary:</strong>{" "}
+                  {itineraryOutput.summary}
+                </div>
+
+                <div style={{ ...styles.briefSection, color: COLORS.soft }}>
+                  Generated: {itineraryOutput.generatedAt}
+                </div>
+              </div>
+            )}
           </div>
-
-          {itineraryOutput && (
-            <div style={styles.card}>
-              <div style={{ fontSize: "24px", fontWeight: 800, marginBottom: "10px" }}>
-                Movement Brief
-              </div>
-
-              <div style={styles.badgeRow}>
-                <span
-                  style={badgeStyle(
-                    levelColor(itineraryOutput.risk) + "22",
-                    levelColor(itineraryOutput.risk),
-                    levelColor(itineraryOutput.risk),
-                  )}
-                >
-                  Risk: {itineraryOutput.risk}
-                </span>
-              </div>
-
-              <div style={{ color: "#cbd5e1", lineHeight: 1.75, marginTop: "14px" }}>
-                <div>
-                  <strong>Hotel:</strong> {itineraryOutput.hotel}
-                </div>
-                <div>
-                  <strong>Route:</strong> {itineraryOutput.route}
-                </div>
-                <div>
-                  <strong>Venue:</strong> {itineraryOutput.venue}
-                </div>
-                <div>
-                  <strong>POC:</strong> {itineraryOutput.poc}
-                </div>
-                <div>
-                  <strong>Generated:</strong> {itineraryOutput.generatedAt}
-                </div>
-                <div style={{ marginTop: "10px" }}>
-                  <strong>Route Considerations:</strong> {itineraryOutput.routeConsiderations}
-                </div>
-                <div style={{ marginTop: "10px" }}>
-                  <strong>Ingress / Egress Notes:</strong> {itineraryOutput.ingressEgress}
-                </div>
-                <div style={{ marginTop: "10px" }}>
-                  <strong>Exposure Points:</strong> {itineraryOutput.exposurePoints}
-                </div>
-                <div style={{ marginTop: "10px" }}>
-                  <strong>Recommended Movement Notes:</strong> {itineraryOutput.movementNotes}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
